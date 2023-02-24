@@ -14,6 +14,9 @@ class AlienInvasion:
         # A surface in Pygame is a part of the screen where a game element can be displayed.
         self.screen = pygame.display.set_mode((1200, 800))
         pygame.display.set_caption("Alien Invasion")
+
+        # Set the background color.
+        self.bg_color = (230, 230, 230)
     
     # The game is controlled by the run_game() method.
     def run_game(self):
@@ -24,6 +27,9 @@ class AlienInvasion:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     sys.exit()
+
+            # Redraw the screen during each pass through the loop.
+            self.screen.fill(self.bg_color)
 
             # Make the most recently drawn screen visible.
             # Tells Pygame to make the most recently drawn screen visible.
