@@ -3,6 +3,7 @@ import sys
 import pygame
 from settings import Settings
 from ship import Ship
+from bullet import Bullet
 
 class AlienInvasion:
     """Overall class to manage game assets and behavior."""
@@ -20,6 +21,9 @@ class AlienInvasion:
         self.settings.screen_height = self.screen.get_rect().height
 
         self.ship = Ship(self)
+        # Create a group to store all the live bullets so we can manage the bullets that have already been fired.
+        # Kind of like a list with some extra functionalities.
+        self.bullets = pygame.sprite.Group()
     
     # The game is controlled by the run_game() method.
     def run_game(self):
@@ -27,6 +31,7 @@ class AlienInvasion:
         while True:
             self._check_events()
             self.ship.update()
+            self.bullets.update()
             self._update_screen()
 
     def _check_events(self):
@@ -51,14 +56,16 @@ class AlienInvasion:
         elif event.key == pygame.K_LEFT:
             self.ship.moving_left = True
         # Move the ship up
-        elif event.key == pygame.K_UP:
-            self.ship.moving_up = True
+        #elif event.key == pygame.K_UP:
+        #    self.ship.moving_up = True
         # Move the ship down
-        elif event.key == pygame.K_DOWN:
-            self.ship.moving_down = True
+        #elif event.key == pygame.K_DOWN:
+        #    self.ship.moving_down = True
         # Exit the game if the user hits the 'Esc' key
         elif event.key == pygame.K_ESCAPE:
             sys.exit()
+        elif event.key == pygame.K_SPACE:
+            self._fire_bullet()
 
     def _check_keyup_events(self, event):
         """Respond to key releases."""
@@ -66,10 +73,15 @@ class AlienInvasion:
             self.ship.moving_right = False
         elif event.key == pygame.K_LEFT:
             self.ship.moving_left = False
-        elif event.key == pygame.K_UP:
-            self.ship.moving_up = False
-        elif event.key == pygame.K_DOWN:
-            self.ship.moving_down = False
+        #elif event.key == pygame.K_UP:
+        #    self.ship.moving_up = False
+        #elif event.key == pygame.K_DOWN:
+        #    self.ship.moving_down = False
+
+    def _fire_bullet(self):
+        """Create a new bullet and add it to the bullets group."""
+        new_bullet = Bullet(self)
+        self.bullets.add(new_bullet)
             
     
     def _update_screen(self):
@@ -77,6 +89,8 @@ class AlienInvasion:
         # Redraw the screen during each pass through the loop.
         self.screen.fill(self.settings.bg_color)
         self.ship.blitme()
+        for bullet in self.bullets.sprites():
+            bullet.draw_bullet()
 
         # Make the most recently drawn screen visible.
         # Tells Pygame to make the most recently drawn screen visible.
