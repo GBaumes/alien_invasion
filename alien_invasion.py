@@ -6,6 +6,7 @@ import pygame
 
 from settings import Settings
 from game_stats import GameStats
+from button import Button
 from ship import Ship
 from bullet import Bullet
 from alien import Alien
@@ -21,12 +22,12 @@ class AlienInvasion:
         self.settings = Settings()
 
         # Set the game to fullscreen
-        self.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
-        self.settings.screen_width = self.screen.get_rect().width
-        self.settings.screen_height = self.screen.get_rect().height
+        #self.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+        #self.settings.screen_width = self.screen.get_rect().width
+        #self.settings.screen_height = self.screen.get_rect().height
 
-        #self.screen = pygame.display.set_mode((self.settings.screen_width, self.settings.screen_height))
-        #pygame.display.set_caption("Alien Invasion")
+        self.screen = pygame.display.set_mode((self.settings.screen_width, self.settings.screen_height))
+        pygame.display.set_caption("Alien Invasion")
 
         # Create an instance to store game stats.
         self.stats = GameStats(self)
@@ -38,6 +39,9 @@ class AlienInvasion:
         self.aliens = pygame.sprite.Group()
 
         self._create_fleet()
+
+        # Make the Play button.
+        self.play_button = Button(self, "Play")
     
     # The game is controlled by the run_game() method.
     def run_game(self):
@@ -137,7 +141,7 @@ class AlienInvasion:
         # Determine the number of rows of aliens that fit on the screen.
         ship_height = self.ship.rect.height
         available_space_y = (self.settings.screen_height - (3 * alien_height) - ship_height)
-        number_rows = available_space_y // (4 * alien_height)
+        number_rows = available_space_y // (2 * alien_height)
 
         # Create the full fleet of aliens.
         for row_number in range(number_rows):
@@ -219,6 +223,10 @@ class AlienInvasion:
         for bullet in self.bullets.sprites():
             bullet.draw_bullet()
         self.aliens.draw(self.screen)
+
+        # Draw the play button if the game is inactive.
+        if not self.stats.game_active:
+            self.play_button.draw_button()
 
         # Make the most recently drawn screen visible.
         # Tells Pygame to make the most recently drawn screen visible.
